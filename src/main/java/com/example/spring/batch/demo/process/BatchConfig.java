@@ -2,10 +2,15 @@ package com.example.spring.batch.demo.process;
 
 import com.example.spring.batch.demo.bean.DbData;
 import com.example.spring.batch.demo.bean.MongoData;
+import com.example.spring.batch.demo.process.listener.JobCompletionNotificationListener;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.support.IteratorItemReader;
 import org.springframework.batch.item.support.ListItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +48,34 @@ public class BatchConfig {
     }
 
     @Bean
-    public DataTransform process() {
+    public DataTransform processor() {
         return new DataTransform();
     }
 
     @Bean
-    public ListItemWriter<MongoData> writer(MongoData data) {
+    public ListItemWriter<MongoData> writer() {
 //        System.out.println(mongoData);
         return new ListItemWriter<MongoData>();
     }
+
+    @Bean
+    public Job lqmJob(JobCompletionNotificationListener listener, Step step1) {
+        return jobBuilderFactory.get("lqmJob")
+                .incrementer(new RunIdIncrementer())
+                .listener(listener)
+                .flow(step1)
+                .end()
+                .build();
+    }
+
+    @Bean
+    public Step step1(ListItemWriter<MongoData> writer) {
+        return stepBuilderFactory.get("step1")
+                .<DbData, MongoData> chunk(10)
+                .reader(reader())
+                .processor(processor())
+                .writer(writer)
+                .build();
+    }
+
 }
