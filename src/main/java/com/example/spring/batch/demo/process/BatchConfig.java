@@ -15,6 +15,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.support.IteratorItemReader;
 import org.springframework.batch.item.support.ListItemWriter;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,9 +72,9 @@ public class BatchConfig {
     public Job lqmJob(JobCompletionNotificationListener listener, Step step1) {
         return jobBuilderFactory.get("lqmJob")
                 .incrementer(new RunIdIncrementer())
-                .listener(listener)
-                .flow(step1)
-                .end()
+                .start(step2())
+                .next(step3())
+                .next(step1)
                 .build();
     }
 
@@ -90,5 +91,36 @@ public class BatchConfig {
                 .writer(writer)
                 .build();
     }
+
+    @Bean
+    public Step step2() {
+        return stepBuilderFactory.get("step2")
+                .listener(stepExecutionListener)
+                .tasklet((contribution, chunkContext) -> {
+                    chunkContext.getStepContext()
+                            .getStepExecution()
+                            .getJobExecution()
+                            .getExecutionContext()
+                            .put("step2", "step2");
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+
+
+    @Bean
+    public Step step3() {
+        return stepBuilderFactory.get("step3")
+                .listener(stepExecutionListener)
+                .tasklet((contribution, chunkContext) -> {
+                    Object orDefault = chunkContext.getStepContext()
+                            .getJobExecutionContext()
+                            .getOrDefault("step2", "key value");
+                    System.out.println(orDefault);
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+
 
 }
