@@ -7,12 +7,12 @@ import com.example.spring.batch.demo.process.listener.MyItemWriteListener;
 import com.example.spring.batch.demo.process.listener.MyReadListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.support.IteratorItemReader;
 import org.springframework.batch.item.support.ListItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,13 @@ import java.util.stream.Stream;
 public class BatchConfig {
     private JobBuilderFactory jobBuilderFactory;
     private StepBuilderFactory stepBuilderFactory;
+
+    private StepExecutionListener stepExecutionListener;
+
+    @Autowired
+    public void setStepExecutionListener(StepExecutionListener stepExecutionListener) {
+        this.stepExecutionListener = stepExecutionListener;
+    }
 
     @Autowired
     public void setJobBuilderFactory(JobBuilderFactory jobBuilderFactory) {
@@ -71,9 +78,11 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step step1(ListItemWriter<MongoData> writer, MyItemWriteListener writeListener, MyReadListener readListener) {
+    public Step step1(ListItemWriter<MongoData> writer, MyItemWriteListener writeListener,
+                      MyReadListener readListener) {
         return stepBuilderFactory.get("step1")
-                .<DbData, MongoData> chunk(10)
+                .listener(stepExecutionListener)
+                .<DbData, MongoData>chunk(10)
                 .listener(readListener)
                 .listener(writeListener)
                 .reader(reader())
