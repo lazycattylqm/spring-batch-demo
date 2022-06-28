@@ -16,4 +16,12 @@ public class MongoData {
                 ", description='" + description + '\'' +
                 '}';
     }
+
+    public static MongoData fromDbData(DbData dbData) {
+        MongoData mongoData = new MongoData();
+        mongoData.setEntitle(dbData.getEntitle());
+        mongoData.setDescription(dbData.getDescription());
+        mongoData.setId(Id.fromDbDataId(dbData.getCustomerId(), dbData.getUserId()));
+        return mongoData;
+    }
 }
