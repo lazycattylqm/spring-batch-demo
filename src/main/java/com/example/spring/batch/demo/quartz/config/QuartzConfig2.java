@@ -3,6 +3,7 @@ package com.example.spring.batch.demo.quartz.config;
 import com.example.spring.batch.demo.quartz.JobBean2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 
@@ -26,9 +27,9 @@ public class QuartzConfig2 {
     }
 
     @Bean
-    public SimpleTriggerFactoryBean simpleTriggerFactoryBean() {
+    public SimpleTriggerFactoryBean simpleTriggerFactoryBean(MethodInvokingJobDetailFactoryBean methodInvokingJobDetailFactoryBean) {
         SimpleTriggerFactoryBean bean = new SimpleTriggerFactoryBean();
-        bean.setJobDetail(methodInvokingJobDetailFactoryBean().getObject());
+        bean.setJobDetail(methodInvokingJobDetailFactoryBean.getObject());
         bean.setStartDelay(1000);
         bean.setRepeatInterval(1000);
         return bean;

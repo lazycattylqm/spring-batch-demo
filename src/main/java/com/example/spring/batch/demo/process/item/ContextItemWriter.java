@@ -1,7 +1,11 @@
 package com.example.spring.batch.demo.process.item;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.AfterStep;
+import org.springframework.batch.core.annotation.AfterWrite;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemWriter;
@@ -29,5 +33,11 @@ public class ContextItemWriter implements ItemWriter<String> {
     @BeforeStep
     public void setStepExecution(StepExecution stepExecution) {
         this.stepExecution = stepExecution;
+    }
+
+    @AfterWrite
+    public ExitStatus afterStep() {
+        stepExecution.getJobExecution().setStatus(BatchStatus.COMPLETED);
+        return ExitStatus.COMPLETED;
     }
 }
