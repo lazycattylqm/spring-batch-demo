@@ -3,6 +3,8 @@ package com.example.spring.batch.demo.process;
 import com.example.spring.batch.demo.bean.DbData;
 import com.example.spring.batch.demo.bean.MongoData;
 import com.example.spring.batch.demo.process.listener.JobCompletionNotificationListener;
+import com.example.spring.batch.demo.process.listener.MyItemWriteListener;
+import com.example.spring.batch.demo.process.listener.MyReadListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -69,9 +71,11 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step step1(ListItemWriter<MongoData> writer) {
+    public Step step1(ListItemWriter<MongoData> writer, MyItemWriteListener writeListener, MyReadListener readListener) {
         return stepBuilderFactory.get("step1")
                 .<DbData, MongoData> chunk(10)
+                .listener(readListener)
+                .listener(writeListener)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer)
