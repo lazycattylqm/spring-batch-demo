@@ -92,7 +92,7 @@ public class BatchConfig {
         return new ListItemWriter<MongoData>();
     }
 
-//    @Bean
+    //    @Bean
     public Job lqmJob(JobCompletionNotificationListener listener, Step step1, Step step4) {
         return jobBuilderFactory.get("lqmJob")
                 .incrementer(new RunIdIncrementer())

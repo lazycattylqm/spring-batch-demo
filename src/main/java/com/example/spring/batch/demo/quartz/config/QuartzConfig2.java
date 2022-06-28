@@ -3,7 +3,6 @@ package com.example.spring.batch.demo.quartz.config;
 import com.example.spring.batch.demo.quartz.JobBean2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 

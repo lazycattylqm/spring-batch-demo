@@ -1,12 +1,8 @@
 package com.example.spring.batch.demo.process.listener;
 
 import com.example.spring.batch.demo.bean.DbData;
-import org.springframework.batch.core.*;
-import org.springframework.batch.core.StepListener;
-import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.ItemReadListener;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 public class MyReadListener implements ItemReadListener<DbData> {
@@ -24,7 +20,6 @@ public class MyReadListener implements ItemReadListener<DbData> {
     public void onReadError(Exception e) {
 
     }
-
 
 
 }

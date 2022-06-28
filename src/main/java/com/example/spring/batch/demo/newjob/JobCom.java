@@ -1,6 +1,5 @@
 package com.example.spring.batch.demo.newjob;
 
-import com.example.spring.batch.demo.process.listener.JobCompletionNotificationListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;

@@ -18,7 +18,8 @@ public class StepListener implements StepExecutionListener {
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        System.out.println(stepExecution.getJobExecution().getExecutionContext()
+        System.out.println(stepExecution.getJobExecution()
+                .getExecutionContext()
                 .get("jobName"));
         return ExitStatus.COMPLETED;
     }

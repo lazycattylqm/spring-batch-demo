@@ -1,11 +1,9 @@
 package com.example.spring.batch.demo.process.item;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +17,7 @@ public class ContextItemWriter implements ItemWriter<String> {
     private StepExecution stepExecution;
 
     private String key;
+
     @Override
     public void write(List<? extends String> list) throws Exception {
         Object key1 = stepExecution.getExecutionContext()
