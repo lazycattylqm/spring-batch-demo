@@ -2,6 +2,9 @@ package com.example.spring.batch.demo.process;
 
 import com.example.spring.batch.demo.bean.DbData;
 import com.example.spring.batch.demo.bean.MongoData;
+import com.example.spring.batch.demo.process.item.ContextItemReader;
+import com.example.spring.batch.demo.process.item.ContextItemWriter;
+import com.example.spring.batch.demo.process.item.ContextProcessor;
 import com.example.spring.batch.demo.process.listener.JobCompletionNotificationListener;
 import com.example.spring.batch.demo.process.listener.MyItemWriteListener;
 import com.example.spring.batch.demo.process.listener.MyReadListener;
@@ -30,6 +33,27 @@ public class BatchConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     private StepExecutionListener stepExecutionListener;
+
+    private ContextItemReader contextItemReader;
+
+    private ContextProcessor contextProcessor;
+
+    private ContextItemWriter contextItemWriter;
+
+    @Autowired
+    public void setContextItemReader(ContextItemReader contextItemReader) {
+        this.contextItemReader = contextItemReader;
+    }
+
+    @Autowired
+    public void setContextProcessor(ContextProcessor contextProcessor) {
+        this.contextProcessor = contextProcessor;
+    }
+
+    @Autowired
+    public void setContextItemWriter(ContextItemWriter contextItemWriter) {
+        this.contextItemWriter = contextItemWriter;
+    }
 
     @Autowired
     public void setStepExecutionListener(StepExecutionListener stepExecutionListener) {
@@ -68,10 +92,11 @@ public class BatchConfig {
         return new ListItemWriter<MongoData>();
     }
 
-    @Bean
-    public Job lqmJob(JobCompletionNotificationListener listener, Step step1) {
+//    @Bean
+    public Job lqmJob(JobCompletionNotificationListener listener, Step step1, Step step4) {
         return jobBuilderFactory.get("lqmJob")
                 .incrementer(new RunIdIncrementer())
+//                .start(step4)
                 .start(step2())
                 .next(step3())
                 .next(step1)
@@ -119,6 +144,16 @@ public class BatchConfig {
                     System.out.println(orDefault);
                     return RepeatStatus.FINISHED;
                 })
+                .build();
+    }
+
+    @Bean
+    public Step step4() {
+        return stepBuilderFactory.get("step4")
+                .<String, String>chunk(1)
+                .reader(contextItemReader)
+                .processor(contextProcessor)
+                .writer(contextItemWriter)
                 .build();
     }
 
