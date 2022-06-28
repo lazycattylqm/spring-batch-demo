@@ -1,6 +1,7 @@
 package com.example.spring.batch.demo.controller;
 
 import com.example.spring.batch.demo.newjob.JobCom;
+import com.example.spring.batch.demo.service.QueryService;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -24,6 +25,13 @@ public class Controller {
     @Autowired
     private JobCom job;
 
+    private QueryService queryService;
+
+    @Autowired
+    public void setQueryService(QueryService queryService) {
+        this.queryService = queryService;
+    }
+
     @GetMapping("/run")
     public String hello() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException,
             JobParametersInvalidException, JobRestartException {
@@ -34,5 +42,11 @@ public class Controller {
 
         jobLauncher.run(job.lqmJob(), parameters);
         return "Hello Quartz";
+    }
+
+    @GetMapping("/query")
+    public String query() {
+        queryService.query();
+        return "query hello";
     }
 }
