@@ -4,6 +4,8 @@ import com.example.spring.batch.demo.bean.CustomerMongo;
 import com.example.spring.batch.demo.bean.CustomerRepo;
 import com.example.spring.batch.demo.newjob.process.DbProcessor;
 import com.example.spring.batch.demo.process.listener.JobCompletionNotificationListener;
+import com.example.spring.batch.demo.repo.CustomerRepoDao;
+import com.example.spring.batch.demo.repo.MongoCustomerRepoDao;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -14,14 +16,18 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.RepositoryItemReader;
+import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.Map;
 
 @Configuration
 @EnableBatchProcessing
@@ -33,6 +39,22 @@ public class DbJobConfig {
     private MongoTemplate template;
 
     private JdbcTemplate jdbcTemplate;
+
+    private CustomerRepoDao customerRepo;
+
+
+    private MongoCustomerRepoDao mongoCustomerRepo;
+
+    @Autowired
+    public void setMongoCustomerRepo(MongoCustomerRepoDao mongoCustomerRepo) {
+        this.mongoCustomerRepo = mongoCustomerRepo;
+    }
+
+    @Autowired
+    public void setCustomerRepo(CustomerRepoDao customerRepo) {
+        this.customerRepo = customerRepo;
+    }
+
 
     @Autowired
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -78,18 +100,11 @@ public class DbJobConfig {
 
     @Bean
     public ItemReader<CustomerRepo> itemLqmReader() {
-        JdbcCursorItemReader<CustomerRepo> itemReader = new JdbcCursorItemReader<>();
-        DataSource dataSource = jdbcTemplate.getDataSource();
-        itemReader.setDataSource(dataSource);
-        itemReader.setSql("SELECT * FROM customer_table");
-        itemReader.setRowMapper((row, index) -> CustomerRepo.builder()
-                .customerId(row.getString("customer_id"))
-                .userId(row.getString("user_id"))
-                .entitle(row.getString(
-                        "entitle"))
-                .description(row.getString("description"))
-                .build());
-
+        RepositoryItemReader<CustomerRepo> itemReader = new RepositoryItemReader<>();
+        itemReader.setRepository(customerRepo);
+        itemReader.setMethodName("findAll");
+        Map<String, Sort.Direction> sorts = Map.of("id", Sort.Direction.ASC);
+        itemReader.setSort(sorts);
         return itemReader;
     }
 
@@ -100,8 +115,9 @@ public class DbJobConfig {
 
     @Bean
     public ItemWriter<CustomerMongo> itemLqmWriter() {
-        MongoItemWriter<CustomerMongo> customerMongoMongoItemWriter = new MongoItemWriter<>();
-        customerMongoMongoItemWriter.setTemplate(template);
-        return customerMongoMongoItemWriter;
+        RepositoryItemWriter<CustomerMongo> itemWriter = new RepositoryItemWriter<>();
+        itemWriter.setRepository(mongoCustomerRepo);
+        itemWriter.setMethodName("save");
+        return itemWriter;
     }
 }
