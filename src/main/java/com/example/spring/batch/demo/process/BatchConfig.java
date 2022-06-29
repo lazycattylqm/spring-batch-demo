@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-@Configuration
+//@Configuration
 @EnableBatchProcessing
 public class BatchConfig {
     private JobBuilderFactory jobBuilderFactory;

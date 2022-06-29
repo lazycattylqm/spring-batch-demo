@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @EnableBatchProcessing
-@Configuration
+//@Configuration
 public class JobConfig {
     private StepBuilderFactory stepBuilderFactory;
 

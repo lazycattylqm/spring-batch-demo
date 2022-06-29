@@ -1,6 +1,7 @@
 package com.example.spring.batch.demo.bean;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "customer_table")
+@Builder
 public class CustomerRepo {
     @Id
     private int id;
