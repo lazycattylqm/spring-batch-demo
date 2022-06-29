@@ -77,12 +77,12 @@ public class DbJobConfig {
     }
 
     @Bean
-    public ItemReader<CustomerRepo> itemLqmReader()    {
+    public ItemReader<CustomerRepo> itemLqmReader() {
         JdbcCursorItemReader<CustomerRepo> itemReader = new JdbcCursorItemReader<>();
         DataSource dataSource = jdbcTemplate.getDataSource();
         itemReader.setDataSource(dataSource);
         itemReader.setSql("SELECT * FROM customer_table");
-        itemReader.setRowMapper((row, index)-> CustomerRepo.builder()
+        itemReader.setRowMapper((row, index) -> CustomerRepo.builder()
                 .customerId(row.getString("customer_id"))
                 .userId(row.getString("user_id"))
                 .entitle(row.getString(
