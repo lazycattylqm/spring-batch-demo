@@ -3,10 +3,11 @@ package com.example.spring.batch.demo.quartz.config;
 import com.example.spring.batch.demo.quartz.JobBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 
-//@Configuration
+@Configuration
 public class QuartzConfig {
 
     private JobBean jobBean;
@@ -25,10 +26,10 @@ public class QuartzConfig {
     }
 
     @Bean
-    public CronTriggerFactoryBean cronTriggerFactoryBean() {
+    public CronTriggerFactoryBean cronTriggerFactoryBean(JobDetailFactoryBean jobDetailBean) {
         CronTriggerFactoryBean bean = new CronTriggerFactoryBean();
-        bean.setJobDetail(jobDetailBean().getObject());
-        bean.setCronExpression("0/1 * * * * ?");
+        bean.setJobDetail(jobDetailBean.getObject());
+        bean.setCronExpression("0/5 * * * * ?");
         return bean;
     }
 }
