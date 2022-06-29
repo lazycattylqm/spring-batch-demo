@@ -1,22 +1,27 @@
 package com.example.spring.batch.demo.service.impl;
 
+import com.example.spring.batch.demo.bean.mongo.CustomerMongo;
 import com.example.spring.batch.demo.bean.mysql.CustomerRepo;
 import com.example.spring.batch.demo.dao.CustomerRepoDao;
+import com.example.spring.batch.demo.dao.MongoCustomerRepoDao;
 import com.example.spring.batch.demo.service.QueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class QueryServiceImpl implements QueryService {
 
     private CustomerRepoDao customerRepoDao;
 
-   /* private MongoCustomerRepoDao mongoCustomerRepoDao;
+    private MongoCustomerRepoDao mongoCustomerRepoDao;
 
     @Autowired
     public void setMongoCustomerRepoDao(MongoCustomerRepoDao mongoCustomerRepoDao) {
         this.mongoCustomerRepoDao = mongoCustomerRepoDao;
-    }*/
+    }
 
     @Autowired
     public void setCustomerRepoDao(CustomerRepoDao customerRepoDao) {
@@ -26,9 +31,12 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public void query() {
         Iterable<CustomerRepo> all = customerRepoDao.findAll();
+        List<CustomerMongo> list = new ArrayList<>();
         for (CustomerRepo customerRepo : all) {
             System.out.println(customerRepo);
+            list.add(CustomerMongo.fromDbData(customerRepo));
         }
+        mongoCustomerRepoDao.saveAll(list);
 
     }
 }
