@@ -2,20 +2,18 @@ package com.example.spring.batch.demo.data.source.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.TransactionManager;
 
 import javax.sql.DataSource;
 
-//@Configuration
-//@EnableJdbcRepositories
-public class DataSourceConfig {
+@Configuration
+@EnableJdbcRepositories("com.example.spring.batch.demo.dao")
+public class DataSourceConfig extends AbstractJdbcConfiguration {
 
 
     @Bean

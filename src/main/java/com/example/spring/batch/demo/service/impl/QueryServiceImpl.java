@@ -1,16 +1,10 @@
 package com.example.spring.batch.demo.service.impl;
 
-import com.example.spring.batch.demo.bean.mongo.CustomerMongo;
 import com.example.spring.batch.demo.bean.mysql.CustomerRepo;
-
 import com.example.spring.batch.demo.dao.CustomerRepoDao;
-import com.example.spring.batch.demo.dao.MongoCustomerRepoDao;
 import com.example.spring.batch.demo.service.QueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class QueryServiceImpl implements QueryService {
