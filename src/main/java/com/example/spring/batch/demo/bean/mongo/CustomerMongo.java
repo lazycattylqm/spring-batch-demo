@@ -1,11 +1,12 @@
-package com.example.spring.batch.demo.bean;
+package com.example.spring.batch.demo.bean.mongo;
 
+import com.example.spring.batch.demo.bean.CustomerId;
+import com.example.spring.batch.demo.bean.mysql.CustomerRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.Id;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Data
 @AllArgsConstructor
@@ -13,7 +14,7 @@ import javax.persistence.Id;
 @Document(collection = "customer_collection")
 public class CustomerMongo {
 
-    @Id
+    @MongoId
     private String id;
 
     private CustomerId customerId;
