@@ -1,8 +1,14 @@
 package com.example.spring.batch.demo.bean;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomerId {
     private String customerId;
     private String customerCountryCode;

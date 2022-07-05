@@ -3,6 +3,7 @@ package com.example.spring.batch.demo.bean.mongo;
 import com.example.spring.batch.demo.bean.CustomerId;
 import com.example.spring.batch.demo.bean.mysql.CustomerRepo;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "customer_collection")
+@Builder
 public class CustomerMongo {
 
     @MongoId
