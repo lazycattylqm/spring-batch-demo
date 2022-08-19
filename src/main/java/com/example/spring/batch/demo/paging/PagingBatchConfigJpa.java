@@ -16,6 +16,7 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,18 +36,18 @@ public class PagingBatchConfigJpa extends DefaultBatchConfigurer {
 
     private EntityManager entityManager;
 
-    private DataSource dataSource;
+    private DataSource anotherDataSource;
 
     @Autowired
     @Override
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+
     }
 
-    @Override
-    protected JobRepository createJobRepository() throws Exception {
-        MapJobRepositoryFactoryBean factory = new MapJobRepositoryFactoryBean();
-        return factory.getObject();
+    @Autowired
+    @Qualifier("dataSource")
+    public void setAnotherDataSource(DataSource anotherDataSource) {
+        this.anotherDataSource = anotherDataSource;
     }
 
     @Autowired
@@ -87,7 +88,7 @@ public class PagingBatchConfigJpa extends DefaultBatchConfigurer {
         Map<String, Object> parameters = Map.of("maxId", maxId.intValue());
         Map<String, Order> sortKeys = Map.of("id", Order.ASCENDING);
         JdbcPagingItemReader<DbData> build1 =
-                new JdbcPagingItemReaderBuilder<DbData>().dataSource(dataSource)
+                new JdbcPagingItemReaderBuilder<DbData>().dataSource(anotherDataSource)
                         .name("JdbcPagingItemReader")
                         .pageSize(3)
                         .rowMapper((rs, index) -> DbData.builder()
