@@ -1,10 +1,14 @@
 package com.example.spring.batch.demo.bean;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@Builder
+@NoArgsConstructor
 public class DbData {
 
     private Integer id;

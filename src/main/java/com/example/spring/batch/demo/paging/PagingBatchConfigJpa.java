@@ -1,30 +1,29 @@
 package com.example.spring.batch.demo.paging;
 
-import com.example.spring.batch.demo.bean.CustomerRepo;
+import com.example.spring.batch.demo.bean.DbData;
 import com.example.spring.batch.demo.paging.step.BeanProcessor;
 import com.example.spring.batch.demo.paging.step.BeansWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
-import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.batch.item.database.orm.JpaNativeQueryProvider;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.Order;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.HashMap;
+import javax.sql.DataSource;
+import java.util.Map;
 
 @Configuration
 @EnableBatchProcessing
@@ -35,6 +34,14 @@ public class PagingBatchConfigJpa extends DefaultBatchConfigurer {
     private EntityManagerFactory entityManagerFactory;
 
     private EntityManager entityManager;
+
+    private DataSource dataSource;
+
+    @Autowired
+    @Override
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     protected JobRepository createJobRepository() throws Exception {
@@ -64,44 +71,45 @@ public class PagingBatchConfigJpa extends DefaultBatchConfigurer {
     }
 
     @Bean
-    public ItemWriter<CustomerRepo> jpaPagingWriter() {
+    public ItemWriter<DbData> jpaPagingWriter() {
         return new BeansWriter();
     }
 
     @Bean
-    public ItemProcessor<CustomerRepo, CustomerRepo> jpaPagingProcessor() {
+    public ItemProcessor<DbData, DbData> jpaPagingProcessor() {
         return new BeanProcessor();
     }
 
+
     @Bean
-    public JpaPagingItemReader<CustomerRepo> readReg() {
-        JpaNativeQueryProvider<CustomerRepo> queryProvider = new JpaNativeQueryProvider<>();
-        queryProvider.setEntityClass(CustomerRepo.class);
-        queryProvider.setSqlQuery("");
-        JpaPagingItemReader<CustomerRepo> build =
-                new JpaPagingItemReaderBuilder<CustomerRepo>().pageSize(5)
-                        .name("jpaPagingReader")
-                        .queryProvider(queryProvider)
-                        .entityManagerFactory(entityManagerFactory)
+    @JobScope
+    public ItemReader<DbData> jpaPagingReader(@Value("#{jobParameters['maxId']?:50L}") Long maxId) {
+        Map<String, Object> parameters = Map.of("maxId", maxId.intValue());
+        Map<String, Order> sortKeys = Map.of("id", Order.ASCENDING);
+        JdbcPagingItemReader<DbData> build1 =
+                new JdbcPagingItemReaderBuilder<DbData>().dataSource(dataSource)
+                        .name("JdbcPagingItemReader")
+                        .pageSize(3)
+                        .rowMapper((rs, index) -> DbData.builder()
+                                .id(rs.getInt("id"))
+                                .customerId(rs.getString("customer_id"))
+                                .entitle(rs.getString("entitle"))
+                                .description(rs.getString("description"))
+                                .userId(rs.getString("user_id"))
+                                .build())
+                        .selectClause("*")
+                        .fromClause("customer_table")
+                        .whereClause("id<:maxId")
+                        .sortKeys(sortKeys)
+                        .parameterValues(parameters)
                         .build();
-
-        return build;
+        return build1;
     }
 
     @Bean
-    public ItemReader<CustomerRepo> jpaPagingReader(JpaPagingItemReader<CustomerRepo> readReg) {
-        JpaNativeQueryProvider<CustomerRepo> queryProvider = new JpaNativeQueryProvider<>();
-        queryProvider.setEntityClass(CustomerRepo.class);
-        queryProvider.setSqlQuery("select * from customer_table");
-        readReg.setQueryProvider(queryProvider);
-        readReg.setParameterValues(new HashMap<String, Object>());
-        return readReg;
-    }
-
-    @Bean
-    public Step jpaPagingStep(ItemReader<CustomerRepo> jpaPagingReader) {
+    public Step jpaPagingStep(ItemReader<DbData> jpaPagingReader) {
         return stepBuilderFactory.get("jpaPagingStep")
-                .<CustomerRepo, CustomerRepo>chunk(3)
+                .<DbData, DbData>chunk(3)
                 .reader(jpaPagingReader)
                 .processor(jpaPagingProcessor())
                 .writer(jpaPagingWriter())
