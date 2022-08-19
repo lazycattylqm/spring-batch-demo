@@ -2,6 +2,7 @@ package com.example.spring.batch.demo.controller;
 
 import com.example.spring.batch.demo.newjob.JobCom;
 import com.example.spring.batch.demo.service.QueryService;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -25,6 +26,8 @@ public class Controller {
     @Autowired
     private JobCom job;
 
+    @Autowired
+    private Job jpaPagingJob;
     private QueryService queryService;
 
     @Autowired
@@ -37,10 +40,10 @@ public class Controller {
             JobParametersInvalidException, JobRestartException {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 
-        JobParameters parameters = jobParametersBuilder.addDate("date", Date.from(Instant.now()))
+        JobParameters parameters = jobParametersBuilder.addDate("date", Date.from(Instant.now())).addLong("maxId", 50L)
                 .toJobParameters();
 
-        jobLauncher.run(job.lqmJob(), parameters);
+        jobLauncher.run(jpaPagingJob, parameters);
         return "Hello Quartz";
     }
 

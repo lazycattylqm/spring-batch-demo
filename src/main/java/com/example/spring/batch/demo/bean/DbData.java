@@ -7,6 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class DbData {
 
+    private Integer id;
+
     private String customerId;
     private String userId;
     private String entitle;

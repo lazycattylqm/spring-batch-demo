@@ -4,14 +4,7 @@ spring:
     url: jdbc:mysql://localhost:3306/liqiming?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
     password: 123456
-  data:
-    mongodb:
-      database: liqiming
-      host: localhost
-      port: 27017
-#      username: "root"
-#      password: "123456"
-  batch:
-    jdbc:
-      initialize-schema: always
+#  batch:
+#    jdbc:
+#      initialize-schema: always
 

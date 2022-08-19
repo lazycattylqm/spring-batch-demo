@@ -29,8 +29,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.Map;
 
-@Configuration
-@EnableBatchProcessing
+//@Configuration
+//@EnableBatchProcessing
 public class DbJobConfig {
     private StepBuilderFactory stepBuilderFactory;
 

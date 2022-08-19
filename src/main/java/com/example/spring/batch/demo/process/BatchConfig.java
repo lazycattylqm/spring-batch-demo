@@ -74,7 +74,7 @@ public class BatchConfig {
     @Bean
     public ItemReader<DbData> reader() {
         Iterator<DbData> iterator =
-                Stream.generate(() -> new DbData("cnhsbcliiqming", "userId", "entitle", "description"))
+                Stream.generate(() -> new DbData(1,"cnhsbcliiqming", "userId", "entitle", "description"))
                         .limit(10)
                         .iterator();
         IteratorItemReader<DbData> reader = new IteratorItemReader<>(iterator);
