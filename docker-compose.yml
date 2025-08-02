@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  spring-batch-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: spring-batch-demo:latest
+    container_name: spring-batch-demo-container
+    ports:
+      - '8080:8080'
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=docker
+    # volumes:
+    # 如果需要挂载配置文件或日志目录，可以取消注释下面的行
+    # - ./logs:/app/logs
+    # - ./config:/app/config
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/actuator/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+# 如果你的应用需要数据库，可以添加数据库服务
+# 例如添加 MySQL:
+#  mysql:
+#    image: mysql:8.0
+#    container_name: spring-batch-mysql
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=rootpassword
+#      - MYSQL_DATABASE=batchdb
+#      - MYSQL_USER=batchuser
+#      - MYSQL_PASSWORD=batchpass
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - mysql_data:/var/lib/mysql
+#    restart: unless-stopped
+
+# volumes:
+#   mysql_data:
