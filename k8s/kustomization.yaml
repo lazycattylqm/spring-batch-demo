@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# 资源列表
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - job.yaml
+  - cronjob.yaml
+
+# 通用标签
+commonLabels:
+  project: spring-batch-demo
+  environment: poc
+  managed-by: kustomize
+
+# 通用注解
+commonAnnotations:
+  deployment.kubernetes.io/revision: "1"
+  created-by: "spring-batch-demo-setup"
+
+# 镜像标签替换（如果需要）
+images:
+  - name: spring-batch-demo
+    newTag: latest
+
+# 名称前缀（可选）
+# namePrefix: poc-
+
+# 命名空间（如果要覆盖）
+# namespace: liqiming-poc

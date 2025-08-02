@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-batch-config
+  namespace: liqiming-poc
+  labels:
+    app: spring-batch-demo
+data:
+  # Spring Boot 应用配置
+  application-k8s.yml: |
+    spring:
+      application:
+        name: spring-batch-demo
+      profiles:
+        active: k8s
+      batch:
+        job:
+          enabled: true
+        initialize-schema: always
+    
+    logging:
+      level:
+        com.example.spring.batch.demo: INFO
+        org.springframework.batch: INFO
+      pattern:
+        console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,metrics
+      endpoint:
+        health:
+          show-details: always
+
+  # 定时任务配置
+  application-k8s-cron.yml: |
+    spring:
+      application:
+        name: spring-batch-demo-cron
+      profiles:
+        active: k8s-cron
+      batch:
+        job:
+          enabled: true
+        initialize-schema: always
+    
+    logging:
+      level:
+        com.example.spring.batch.demo: INFO
+        org.springframework.batch: INFO
+      pattern:
+        console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - [CRON] %msg%n"
+    
+    # 可以添加特定的定时任务配置
+    batch:
+      cron:
+        enabled: true
+        cleanup:
+          enabled: true
+          retention-days: 7

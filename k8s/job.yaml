@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: spring-batch-job
+  namespace: liqiming-poc
+  labels:
+    app: spring-batch-demo
+    type: one-time-job
+spec:
+  # Job 完成后保留的时间（秒）
+  ttlSecondsAfterFinished: 3600
+  # 重试次数
+  backoffLimit: 3
+  # 并行度设置
+  parallelism: 1
+  completions: 1
+  template:
+    metadata:
+      labels:
+        app: spring-batch-demo
+        type: one-time-job
+    spec:
+      # 重启策略：Never 表示 Pod 失败后不重启，OnFailure 表示失败后重启
+      restartPolicy: Never
+      containers:
+      - name: spring-batch-container
+        image: spring-batch-demo:latest
+        # 如果镜像不在本地，设置为 Never 避免拉取失败
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "k8s"
+        - name: JAVA_OPTS
+          value: "-Xmx768m -Xms256m -Djava.security.egd=file:/dev/./urandom"
+        # 如果需要配置文件或数据卷，可以取消注释
+        # volumeMounts:
+        # - name: config-volume
+        #   mountPath: /app/config
+        # - name: logs-volume
+        #   mountPath: /app/logs
+      # 如果需要配置文件或数据卷，可以取消注释
+      # volumes:
+      # - name: config-volume
+      #   configMap:
+      #     name: spring-batch-config
+      # - name: logs-volume
+      #   emptyDir: {}
