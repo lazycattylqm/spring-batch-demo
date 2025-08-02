@@ -8,7 +8,7 @@ metadata:
     type: one-time-job
 spec:
   # Job 完成后保留的时间（秒）
-  ttlSecondsAfterFinished: 3600
+  ttlSecondsAfterFinished: 60
   # 重试次数
   backoffLimit: 3
   # 并行度设置

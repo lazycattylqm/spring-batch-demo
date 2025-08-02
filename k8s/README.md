@@ -57,11 +57,11 @@ kubectl apply -f k8s/cronjob.yaml
 
 ### CronJob (定时任务)
 
-- **调度**: `0 2 * * *` (每天凌晨 2 点执行)
+- **调度**: `*/3 * * * *` (每 3 分钟执行一次)
 - **时区**: `Asia/Shanghai`
 - **并发策略**: `Forbid` (禁止并发执行)
-- **成功历史保留**: 3 个
-- **失败历史保留**: 1 个
+- **成功历史保留**: 2 个
+- **失败历史保留**: 2 个
 
 ### ConfigMap
 
@@ -142,6 +142,9 @@ kubectl delete namespace liqiming-poc
 编辑 `cronjob.yaml` 中的 `schedule` 字段：
 
 ```yaml
+# 每3分钟执行一次（当前配置）
+schedule: "*/3 * * * *"
+
 # 每小时执行一次
 schedule: "0 * * * *"
 
