@@ -17,14 +17,14 @@ data:
         job:
           enabled: true
         initialize-schema: always
-    
+
     logging:
       level:
         com.example.spring.batch.demo: INFO
         org.springframework.batch: INFO
       pattern:
         console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    
+
     management:
       endpoints:
         web:
@@ -45,14 +45,14 @@ data:
         job:
           enabled: true
         initialize-schema: always
-    
+
     logging:
       level:
         com.example.spring.batch.demo: INFO
         org.springframework.batch: INFO
       pattern:
         console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - [CRON] %msg%n"
-    
+
     # 可以添加特定的定时任务配置
     batch:
       cron:

@@ -16,14 +16,13 @@ commonLabels:
 
 # 通用注解
 commonAnnotations:
-  deployment.kubernetes.io/revision: "1"
-  created-by: "spring-batch-demo-setup"
+  deployment.kubernetes.io/revision: '1'
+  created-by: 'spring-batch-demo-setup'
 
 # 镜像标签替换（如果需要）
 images:
   - name: spring-batch-demo
     newTag: latest
-
 # 名称前缀（可选）
 # namePrefix: poc-
 

@@ -14,26 +14,26 @@ spec:
   # "0 2 * * *"     - 每天凌晨 2:00
   # "0 */6 * * *"   - 每 6 小时执行一次
   # "0 9 * * 1-5"   - 周一到周五上午 9:00
-  schedule: "*/2 * * * *"
-  
+  schedule: '*/2 * * * *'
+
   # 时区设置（可选）
-  timeZone: "Asia/Shanghai"
-  
+  timeZone: 'Asia/Shanghai'
+
   # 并发策略：
   # Allow: 允许并发执行
   # Forbid: 禁止并发，如果上一个任务未完成，跳过新任务
   # Replace: 如果上一个任务未完成，终止并替换为新任务
   concurrencyPolicy: Forbid
-  
+
   # 保留成功的 Job 历史记录数量（每3分钟执行，适当减少保留数量）
   successfulJobsHistoryLimit: 2
-  
+
   # 保留失败的 Job 历史记录数量
   failedJobsHistoryLimit: 2
-  
+
   # 任务启动的截止时间（秒），如果超过这个时间任务还没启动则视为失败
   startingDeadlineSeconds: 300
-  
+
   jobTemplate:
     metadata:
       labels:
@@ -52,32 +52,32 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - name: spring-batch-container
-            image: spring-batch-demo:latest
-            imagePullPolicy: Never
-            resources:
-              limits:
-                memory: "1Gi"
-                cpu: "500m"
-              requests:
-                memory: "512Mi"
-                cpu: "250m"
-            env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: "k8s-cron"
-            - name: JAVA_OPTS
-              value: "-Xmx768m -Xms256m -Djava.security.egd=file:/dev/./urandom"
-            - name: JOB_TYPE
-              value: "scheduled"
-            # 添加时间戳环境变量，便于日志追踪
-            - name: JOB_START_TIME
-              value: "$(date +%Y%m%d_%H%M%S)"
-            # 如果需要配置文件或数据卷，可以取消注释
-            # volumeMounts:
-            # - name: config-volume
-            #   mountPath: /app/config
-            # - name: logs-volume
-            #   mountPath: /app/logs
+            - name: spring-batch-container
+              image: spring-batch-demo:latest
+              imagePullPolicy: Never
+              resources:
+                limits:
+                  memory: '1Gi'
+                  cpu: '500m'
+                requests:
+                  memory: '512Mi'
+                  cpu: '250m'
+              env:
+                - name: SPRING_PROFILES_ACTIVE
+                  value: 'k8s-cron'
+                - name: JAVA_OPTS
+                  value: '-Xmx768m -Xms256m -Djava.security.egd=file:/dev/./urandom'
+                - name: JOB_TYPE
+                  value: 'scheduled'
+                # 添加时间戳环境变量，便于日志追踪
+                - name: JOB_START_TIME
+                  value: '$(date +%Y%m%d_%H%M%S)'
+              # 如果需要配置文件或数据卷，可以取消注释
+              # volumeMounts:
+              # - name: config-volume
+              #   mountPath: /app/config
+              # - name: logs-volume
+              #   mountPath: /app/logs
           # 如果需要配置文件或数据卷，可以取消注释
           # volumes:
           # - name: config-volume

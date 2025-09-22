@@ -23,28 +23,28 @@ spec:
       # 重启策略：Never 表示 Pod 失败后不重启，OnFailure 表示失败后重启
       restartPolicy: Never
       containers:
-      - name: spring-batch-container
-        image: spring-batch-demo:latest
-        # 如果镜像不在本地，设置为 Never 避免拉取失败
-        imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: "k8s"
-        - name: JAVA_OPTS
-          value: "-Xmx768m -Xms256m -Djava.security.egd=file:/dev/./urandom"
-        # 如果需要配置文件或数据卷，可以取消注释
-        # volumeMounts:
-        # - name: config-volume
-        #   mountPath: /app/config
-        # - name: logs-volume
-        #   mountPath: /app/logs
+        - name: spring-batch-container
+          image: spring-batch-demo:latest
+          # 如果镜像不在本地，设置为 Never 避免拉取失败
+          imagePullPolicy: Never
+          resources:
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'k8s'
+            - name: JAVA_OPTS
+              value: '-Xmx768m -Xms256m -Djava.security.egd=file:/dev/./urandom'
+          # 如果需要配置文件或数据卷，可以取消注释
+          # volumeMounts:
+          # - name: config-volume
+          #   mountPath: /app/config
+          # - name: logs-volume
+          #   mountPath: /app/logs
       # 如果需要配置文件或数据卷，可以取消注释
       # volumes:
       # - name: config-volume
